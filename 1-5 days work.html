@@ -1,0 +1,57 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>BOOKING APPOINTEMENT APP</title>
+</head>
+<body>
+    <form onsubmit="savetolocalstorage(event)">
+        <label>Name</label>
+        <input type="text" name="username" required>
+        <label>EmailId</label>
+        <input type="text" name="emailid" required>
+        <label>phone</label>
+        <input type="number" name="phoneo" required>
+        <button>Submit</button>
+    </form>
+    <ul id="listofusers"></ul>
+    <script>
+        function savetolocalstorage(event){
+            event.preventDefault()
+            const name= event.target.username.value;
+            const emailid=event.target.emailid.value;
+            const phone1=event.target.phoneo.value;
+            // localStorage.setItem('name',name)
+            // localStorage.setItem('emailid',emailid)
+            // localStorage.setItem('phoneno',phone1)
+            const obj={
+                name:name,
+                emailid:emailid,
+                phone1:phone1
+            }
+            localStorage.setItem(obj.emailid,JSON.stringify(obj))
+            shownewuseronscreen(obj);
+        }
+            window.addEventListener("DOMContentLoaded", () => {
+                    const localStorageObj = localStorage;
+                    const localstoragekeys  = Object.keys(localStorageObj)
+
+                    for(var i =0; i< localstoragekeys.length; i++){
+                        const key = localstoragekeys[i]
+                        const userDetailsString = localStorageObj[key];
+                        const userDetailsObj = JSON.parse(userDetailsString);
+                        showNewUserOnScreen(userDetailsObj)
+                }
+            })
+        
+        
+        function shownewuseronscreen(user){
+            const parentnode=document.getElementById('listofusers')
+            const childnode=   `<li> ${user.name}, ${user.emailid}</li>`
+            parentnode.innerHTML= parentnode.innerHTML + childnode
+        }
+    </script>
+</body>
+</html>
