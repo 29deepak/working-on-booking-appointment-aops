@@ -1,0 +1,115 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>BOOKING APPOINTEMENT APP</title>
+</head>
+<body>
+    <form onsubmit="savetolocalstorage(event)">
+        <label>Name</label>
+        <input type="text" id="username" name="username" required>
+        <label>EmailId</label>
+        <input type="text" id="emailid" name="emailid" required>
+        <label>phone</label>
+        <input type="number" id="phoneo" name="phoneo">
+        <button>Submit</button>
+    </form>
+    <ul id="listofusers"></ul>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/axios/1.1.3/axios.min.js"></script>
+    <script>
+        function savetolocalstorage(event){
+            event.preventDefault()
+            const name= event.target.username.value;
+            const emailid=event.target.emailid.value;
+            const phone1=event.target.phoneo.value;
+            // localStorage.setItem('name',name)
+            // localStorage.setItem('emailid',emailid)
+            // localStorage.setItem('phoneno',phone1)
+            const obj={
+                name:name,
+                emailid:emailid,
+                phone1:phone1
+            }
+            // localStorage.setItem(obj.emailid,JSON.stringify(obj))
+            axios.post("https://crudcrud.com/api/c88417711e154fa3b4d5dad0cee29eaf/appointment",obj)
+            .then((response) =>{
+                shownewuseronscreen(response.data)
+                // console.log(response)
+            })
+            .catch((err) =>{
+                document.body.innerHTML = document.body.innerHTML + "<h4>something went wrong </h4>"
+                console.log(err)
+            })
+            // shownewuseronscreen(obj);
+        }
+        // when refreshing the page it should be there on screen
+            window.addEventListener("DOMContentLoaded", () => {
+                //axios.get or axis.post is a network call
+                 axios.get("https://crudcrud.com/api/c88417711e154fa3b4d5dad0cee29eaf/appointment")
+                 .then((response) => {
+                    console.log(response)
+                    for(var i=0;i<response.data.length;i++){
+                        shownewuseronscreen(response.data[i])
+                    }
+                 })
+                 .catch((error) => {
+                    console.log(error)
+                 })
+                //     const localStorageObj = localStorage;
+                //     const localstoragekeys  = Object.keys(localStorageObj)
+
+                //     for(var i =0; i< localstoragekeys.length; i++){
+                //         const key = localstoragekeys[i]
+                //         const userDetailsString = localStorageObj[key];
+                //         const userDetailsObj = JSON.parse(userDetailsString);
+           
+                //         shownewuseronscreen(userDetailsObj)
+                // }
+            })
+            //async-delay 
+            //sync-no delay
+            //console.log is a synchoronous
+        
+        
+        function shownewuseronscreen(user){
+            // user ={
+            //     _id :"",
+            //     name:"",
+            //     email:""
+            // }
+            const parentnode=document.getElementById('listofusers')
+            const childnode=   `<li id=${user._id}> ${user.name}, ${user.emailid}
+                                <button onclick=deleteUser('${user._id}')> Delete user </button>
+                                <button onclick=edituser('${user.emailid}','${user.name}','${user.phone1}',${user._id})> Edit User </button></li>`
+            parentnode.innerHTML= parentnode.innerHTML + childnode
+        }
+        function edituser(emailid,name,phone1,userid){
+            document.getElementById('emailid').value=emailid
+            document.getElementById('username').value=name
+            document.getElementById('phoneo').value=phone1
+            deleteUser(userid)
+
+        }
+        function deleteUser(userid){
+            axios.delete(`https://crudcrud.com/api/c88417711e154fa3b4d5dad0cee29eaf/appointment/${userid}`)
+            .then((response) => {
+                removeuserfromscreen(userid)
+
+            })
+            .catch((err) =>{
+                console.log(err)
+            })
+        //     console.log(emailid)
+        //     localStorage.removeItem(emailid);
+        //     removeuserfromscreen(emailid)
+         }
+        function removeuserfromscreen(userid){
+            const parentnode=document.getElementById('listofusers')
+            const childnodeisdeleted=document.getElementById(userid)
+            parentnode.removeChild(childnodeisdeleted)
+        }
+    </script>
+</body>
+</html>
