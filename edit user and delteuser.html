@@ -1,0 +1,78 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>BOOKING APPOINTEMENT APP</title>
+</head>
+<body>
+    <form onsubmit="savetolocalstorage(event)">
+        <label>Name</label>
+        <input type="text" id="username" name="username" required>
+        <label>EmailId</label>
+        <input type="text" id="emailid" name="emailid" required>
+        <label>phone</label>
+        <input type="number" id="phoneo" name="phoneo">
+        <button>Submit</button>
+    </form>
+    <ul id="listofusers"></ul>
+    <script>
+        function savetolocalstorage(event){
+            event.preventDefault()
+            const name= event.target.username.value;
+            const emailid=event.target.emailid.value;
+            const phone1=event.target.phoneo.value;
+            // localStorage.setItem('name',name)
+            // localStorage.setItem('emailid',emailid)
+            // localStorage.setItem('phoneno',phone1)
+            const obj={
+                name:name,
+                emailid:emailid,
+                phone1:phone1
+            }
+            localStorage.setItem(obj.emailid,JSON.stringify(obj))
+            shownewuseronscreen(obj);
+        }
+        // when refreshing the page it should be there on screen
+            this.addEventListener("DOMContentLoaded", () => {
+                    const localStorageObj = localStorage;
+                    const localstoragekeys  = Object.keys(localStorageObj)
+
+                    for(var i =0; i< localstoragekeys.length; i++){
+                        const key = localstoragekeys[i]
+                        const userDetailsString = localStorageObj[key];
+                        const userDetailsObj = JSON.parse(userDetailsString);
+           
+                        shownewuseronscreen(userDetailsObj)
+                }
+            })
+        
+        
+        function shownewuseronscreen(user){
+            const parentnode=document.getElementById('listofusers')
+            const childnode=   `<li id=${user.emailid}> ${user.name}, ${user.emailid}
+                                <button onclick=deleteUser('${user.emailid}')> Delete user </button>
+                                <button onclick=edituser('${user.emailid}','${user.name}','${user.phone1}')> Edit User </button></li>`
+            parentnode.innerHTML= parentnode.innerHTML + childnode
+        }
+        function edituser(emailid,name,phone1){
+            document.getElementById('emailid').value=emailid
+            document.getElementById('username').value=name
+            document.getElementById('phoneo').value=phone1
+            deleteUser(emailid)
+
+        }
+        function deleteUser(emailid){
+            console.log(emailid)
+            localStorage.removeItem(emailid);
+            removeuserfromscreen(emailid)
+        }
+        function removeuserfromscreen(emaiil){
+            const parentnode=document.getElementById('listofusers')
+            const childnodeisdeleted=document.getElementById(emaiil)
+            parentnode.removeChild(childnodeisdeleted)
+        }
+    </script>
+</body>
+</html>
